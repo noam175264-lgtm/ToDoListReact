@@ -2,7 +2,7 @@ import axios from "axios";
 
 // יצירת instance של axios
 const api = axios.create({
-  baseURL: "http://localhost:5055"
+  baseURL:  process.env.REACT_APP_API_URL || "http://localhost:5055"
 });
 
 // request interceptor: מוסיף Authorization אם יש token
