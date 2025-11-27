@@ -39,33 +39,37 @@ function Tasks() {
   }
 
   async function createTodo(e) {
-    e.preventDefault();
-    if (!newTodo.trim()) return;
-    
-    try {
-      await api.addTask(newTodo, false);
-      setNewTodo("");
-      await getTodos();
-    } catch (error) {
-      console.error("Error creating todo:", error);
+  e.preventDefault();
+  if (!newTodo.trim()) return;
+  
+  try {
+    const newTask = await api.addTask(newTodo, false);
+    setTodos([...todos, newTask]); // הוסף לרשימה הקיימת
+    setNewTodo("");
+  } catch (error) {
+    console.error("Error creating todo:", error);
     }
   }
 
   async function updateCompleted(todo, isComplete) {
-    try {
-      await api.updateTask(todo.id, todo.name, isComplete);
-      await getTodos();
-    } catch (error) {
-      console.error("Error updating todo:", error);
+  try {
+    await api.updateTask(todo.id, todo.name, isComplete);
+    // עדכן את המשימה ב-state
+    setTodos(todos.map(t => 
+      t.id === todo.id ? { ...t, isComplete } : t
+    ));
+  } catch (error) {
+    console.error("Error updating todo:", error);
     }
   }
 
   async function deleteTodo(id) {
-    try {
-      await api.deleteTask(id);
-      await getTodos();
-    } catch (error) {
-      console.error("Error deleting todo:", error);
+  try {
+    await api.deleteTask(id);
+    // הסר את המשימה מה-state
+    setTodos(todos.filter(t => t.id !== id));
+  } catch (error) {
+    console.error("Error deleting todo:", error);
     }
   }
 
